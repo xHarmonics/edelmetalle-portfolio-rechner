@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edelmetall-Portfolio Rechner</title>
+    <style>
+        :root {
+            --primary-gold: #d4af37;
+            --primary-silver: #a8a9ad;
+            --primary-platinum: #797979;
+            --primary-copper: #b87333;
+            
+            --bg-color: #f4f4f9;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --accent-blue: #007bff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 600px;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #444;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        /* Umschalter Design */
+        .mode-switch {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            background: #eee;
+            padding: 5px;
+            border-radius: 25px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 20px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .mode-btn.active {
+            background-color: #333;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* TAB NAVIGATION */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .tab-btn {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            white-space: nowrap;
+            font-weight: 600;
+            flex: 1;
+            text-align: center;
+        }
+
+        .tab-btn.active-gold { background-color: var(--primary-gold); color: white; border-color: var(--primary-gold); }
+        .tab-btn.active-silver { background-color: var(--primary-silver); color: white; border-color: var(--primary-silver); }
+        .tab-btn.active-platinum { background-color: var(--primary-platinum); color: white; border-color: var(--primary-platinum); }
+        .tab-btn.active-copper { background-color: var(--primary-copper); color: white; border-color: var(--primary-copper); }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Preis Sektion */
+        .price-section {
+            background-color: #fcfcfc;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            margin-bottom: 20px;
+            text-align: center;
+            border-left: 5px solid #ccc;
+        }
+
+        #section-gold .price-section { border-left-color: var(--primary-gold); background-color: #fffdf5; }
+        #section-silver .price-section { border-left-color: var(--primary-silver); background-color: #f8f9fa; }
+        #section-platinum .price-section { border-left-color: var(--primary-platinum); background-color: #f0f0f0; }
+        #section-copper .price-section { border-left-color: var(--primary-copper); background-color: #fff5ee; }
+
+        .price-input-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .price-section input {
+            width: 140px;
+            padding: 10px;
+            font-size: 1.3rem;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .price-section input:disabled {
+            background-color: #e9ecef;
+            color: #666;
+            cursor: not-allowed;
+            border-color: transparent;
+        }
+
+        .refresh-btn {
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: none; 
+        }
+
+        /* LISTE & INPUTS (Updated Style) */
+        .metal-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .metal-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Schiebt Label nach links, Input nach rechts */
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .metal-label {
+            flex: 1; /* Nimmt den linken Platz ein */
+        }
+        .metal-label span { display: block; font-weight: bold; color: #333; }
+        .metal-label small { color: #888; font-size: 0.8rem; }
+
+        /* Neue Gruppe für Input + g */
+        .input-group {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px; /* Abstand zwischen Input und g */
+        }
+
+        .metal-input {
+            width: 100px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            text-align: right;
+            font-size: 1.1rem;
+            color: #333;
+            background: #fff;
+            transition: border-color 0.2s;
+        }
+
+        .metal-input:focus {
+            outline: none;
+            border-color: var(--primary-gold); /* Fokus Farbe */
+        }
+
+        .unit {
+            font-size: 1rem;
+            color: #666;
+            width: 15px; /* Feste Breite damit es nicht springt */
+        }
+
+
+        /* Gesamtergebnis */
+        .total-summary {
+            margin-top: 30px;
+            background-color: #222;
+            color: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .total-label { font-size: 0.8rem; opacity: 0.7; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1.5px; }
+        .total-value { font-size: 2.5rem; font-weight: bold; color: var(--primary-gold); margin-bottom: 20px; }
+        
+        .breakdown {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-top: 1px solid #444;
+            padding-top: 15px;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+        
+        .breakdown-item { width: 45%; display: flex; justify-content: space-between; }
+        .breakdown-val { font-weight: bold; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Portfolio Rechner</h1>
+
+    <div class="mode-switch">
+        <button class="mode-btn active" id="btnManual" onclick="setMode('manual')">Manuell</button>
+        <button class="mode-btn" id="btnLive" onclick="setMode('live')">Live Preise - Coming Soon</button>
+    </div>
+    <div style="text-align:center; margin-bottom:15px; display:none;" id="liveControl">
+        <button class="refresh-btn" style="display:inline-block;" onclick="fetchLivePrices()">↻ Alle Preise aktualisieren</button>
+        <div id="statusMsg" style="font-size:0.8rem; color:#666; margin-top:5px;"></div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active-gold" onclick="openTab('gold')">Gold</button>
+        <button class="tab-btn" onclick="openTab('silver')">Silber</button>
+        <button class="tab-btn" onclick="openTab('platinum')">Platin</button>
+        <button class="tab-btn" onclick="openTab('copper')">Kupfer</button>
+    </div>
+
+    <div id="section-gold" class="content-section active">
+        <div class="price-section">
+            <label>Goldpreis (999) pro Gramm in €</label>
+            <div class="price-input-wrapper">
+                <input type="number" id="price-gold" value="128.18" step="0.01" oninput="calculate()">
+            </div>
+        </div>
+        <div class="metal-list">
+            <div class="metal-item">
+                <div class="metal-label"><span>8 Karat</span><small>Gold 333 (33,3%)</small></div>
+                <div class="input-group">
+                    <input type="number" class="metal-input" data-metal="gold" data-purity="0.333" placeholder="0" oninput="calculate()">
+                    <span class="unit">g</span>
+                </div>
+            </div>
+            <div class="metal-item">
+                <div class="metal-label"><span>14 Karat</span><small>Gold 585 (58,5%)</small></div>
+                <div class="input-group">
+                    <input type="number" class="metal-input" data-metal="gold" data-purity="0.585" placeholder="0" oninput="calculate()">
+                    <span class="unit">g</span>
+                </div>
+            </div>
+            <div class="metal-item">
+                <div class="metal-label"><span>18 Karat</span><small>Gold 750 (75,0%)</small></div>
+                <div class="input-group">
+                    <input type="number" class="metal-input" data-metal="gold" data-purity="0.750" placeholder="0" oninput="calculate()">
+                    <span class="unit">g</span>
+                </div>
+            </div>
+            <div class="metal-item">
+                <div class="metal-label"><span>22 Karat</span><small>Gold 916 (91,6%)</small></div>
+                <div class="input-group">
+                    <input type="number" class="metal-input" data-metal="gold" data-purity="0.916" value="300" oninput="calculate()">
+                    <span class="unit">g</span>
+                </div>
+            </div>
+            <div class="metal-item">
+                <div class="metal-label"><span>24 Karat</span><small>Gold 999 (Feingold)</small></div>
+                <div class="input-group">
+                    <input type="number" class="metal-input" data-metal="gold" data-purity="0.999" placeholder="0" oninput="calculate()">
+                    <span class="unit">g</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="section-silver" class="content-section">
+        <div class="price-section">
+            <label>Silberpreis (999) pro Gramm in €</label>
+            <div class="price-input-wrapper">
+                <input type="number" id="price-silver" value="0.90" step="0.01" oninput="calculate()">
+            </div>
+        </div>
+        <div class="metal-list">
+            <div class="metal-item">
+                <div class="metal-label"><span>Silber 800</span><small>Besteck/Korpusware</small></div>
+                <div class="input-group">
+                    <input type="number" class="metal-input" data-metal="silver" data-purity="0.800" placeholder="0" oninput="calculate()">
+                    <span class="unit">g</span>
+                </div>
+            </div>
+            <div class="metal-item">
+                <div class="metal-label"><span>Silber 835</span><small>Gebrauchssilber</small></div>
+                <div class="input-group">
+                    <input type="number" class="metal-input" data-metal="silver" data-purity="0.835" placeholder="0" oninput="calculate()">
+                    <span class="unit">g</span>
+                </div>
+            </div>
+            <div class="metal-item">
+                <div class="metal-label"><span>Sterling 925</span><small>Schmuck/Münzen</small></div>
+                <div class="input-group">
+                    <input type="number" class="metal-input" data-metal="silver" data-purity="0.925" placeholder="0" oninput="calculate()">
+                    <span class="unit">g</span>
+                </div>
+            </div>
+            <div class="metal-item">
+                <div class="metal-label"><span>Feinsilber 999</span><small>Barren/Münzen</small></div>
+                <div class="input-group">
+                    <input type="number" class="metal-input" data-metal="silver" data-purity="0.999" placeholder="0" oninput="calculate()">
+                    <span class="unit">g</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="section-platinum" class="content-section">
+        <div class="price-section">
+            <label>Platinpreis (999) pro Gramm in €</label>
+            <div class="price-input-wrapper">
+                <input type="number" id="price-platinum" value="30.00" step="0.01" oninput="calculate()">
+            </div>
+        </div>
+        <div class="metal-list">
+            <div class="metal-item">
+                <div class="metal-label"><span>Platin 950</span><small>Schmuckstandard</small></div>
+                <div class="input-group">
+                    <input type="number" class="metal-input" data-metal="platinum" data-purity="0.950" placeholder="0" oninput="calculate()">
+                    <span class="unit">g</span>
+                </div>
+            </div>
+            <div class="metal-item">
+                <div class="metal-label"><span>Feinplatin 999</span><small>Barren/Münzen</small></div>
+                <div class="input-group">
+                    <input type="number" class="metal-input" data-metal="platinum" data-purity="0.999" placeholder="0" oninput="calculate()">
+                    <span class="unit">g</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="section-copper" class="content-section">
+        <div class="price-section">
+            <label>Kupferpreis (999) pro Gramm in €</label>
+            <div class="price-input-wrapper">
+                <input type="number" id="price-copper" value="0.01" step="0.001" oninput="calculate()">
+            </div>
+        </div>
+        <div class="metal-list">
+             <div class="metal-item">
+                <div class="metal-label"><span>Feinkupfer 999</span><small>Barren/Münzen</small></div>
+                <div class="input-group">
+                    <input type="number" class="metal-input" data-metal="copper" data-purity="0.999" placeholder="0" oninput="calculate()">
+                    <span class="unit">g</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="total-summary">
+        <div class="total-label">Gesamtwert Portfolio</div>
+        <div class="total-value" id="totalPortfolioValue">35.223,86 €</div>
+        
+        <div class="breakdown">
+            <div class="breakdown-item" style="color:var(--primary-gold)">Gold: <span class="breakdown-val" id="val-gold">35.223,86 €</span></div>
+            <div class="breakdown-item" style="color:var(--primary-silver)">Silber: <span class="breakdown-val" id="val-silver">0,00 €</span></div>
+            <div class="breakdown-item" style="color:var(--primary-platinum)">Platin: <span class="breakdown-val" id="val-platinum">0,00 €</span></div>
+            <div class="breakdown-item" style="color:var(--primary-copper)">Kupfer: <span class="breakdown-val" id="val-copper">0,00 €</span></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let currentMode = 'manual';
+
+    // UI Tab Logic
+    function openTab(metal) {
+        document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
+        document.getElementById('section-' + metal).classList.add('active');
+        
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.className = 'tab-btn');
+        const activeBtn = document.querySelector(`.tab-btn[onclick="openTab('${metal}')"]`);
+        activeBtn.classList.add(`active-${metal}`);
+    }
+
+    // Mode Logic
+    function setMode(mode) {
+        currentMode = mode;
+        const inputs = document.querySelectorAll('.price-section input');
+        const liveControl = document.getElementById('liveControl');
+        const btnManual = document.getElementById('btnManual');
+        const btnLive = document.getElementById('btnLive');
+
+        if (mode === 'manual') {
+            inputs.forEach(inp => inp.disabled = false);
+            liveControl.style.display = 'none';
+            btnManual.classList.add('active');
+            btnLive.classList.remove('active');
+        } else {
+            inputs.forEach(inp => inp.disabled = true);
+            liveControl.style.display = 'block';
+            btnManual.classList.remove('active');
+            btnLive.classList.add('active');
+            fetchLivePrices();
+        }
+    }
+
+    // Mock Live Prices
+    function fetchLivePrices() {
+        const statusMsg = document.getElementById('statusMsg');
+        statusMsg.innerText = "Lade Kurse...";
+        
+        setTimeout(() => {
+            const prices = {
+                gold: (Math.random() * (130 - 126) + 126).toFixed(2),
+                silver: (Math.random() * (0.95 - 0.85) + 0.85).toFixed(2),
+                platinum: (Math.random() * (32 - 28) + 28).toFixed(2),
+                copper: (Math.random() * (0.012 - 0.008) + 0.008).toFixed(3) 
+            };
+
+            document.getElementById('price-gold').value = prices.gold;
+            document.getElementById('price-silver').value = prices.silver;
+            document.getElementById('price-platinum').value = prices.platinum;
+            document.getElementById('price-copper').value = prices.copper;
+
+            statusMsg.innerText = "Kurse aktualisiert.";
+            calculate();
+        }, 500);
+    }
+
+    // Berechnung
+    function calculate() {
+        const metals = ['gold', 'silver', 'platinum', 'copper'];
+        let grandTotal = 0;
+
+        metals.forEach(metal => {
+            const priceInput = document.getElementById(`price-${metal}`).value;
+            const pricePerGram = parseFloat(priceInput) || 0;
+
+            const inputs = document.querySelectorAll(`.metal-input[data-metal="${metal}"]`);
+            let metalTotal = 0;
+
+            inputs.forEach(input => {
+                const weight = parseFloat(input.value) || 0;
+                const purity = parseFloat(input.getAttribute('data-purity'));
+                if (weight > 0) {
+                    metalTotal += (weight * purity * pricePerGram);
+                }
+            });
+
+            document.getElementById(`val-${metal}`).innerText = metalTotal.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
+            grandTotal += metalTotal;
+        });
+
+        document.getElementById('totalPortfolioValue').innerText = grandTotal.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
+    }
+    
+    // Init Calculation on Load (für die Demo Werte)
+    window.onload = calculate;
+</script>
+
+</body>
+</html>
