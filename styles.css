@@ -1,0 +1,236 @@
+:root {
+    --primary-gold: #d4af37;
+    --primary-silver: #a8a9ad;
+    --primary-platinum: #797979;
+    --primary-copper: #b87333;
+    
+    --bg-color: #f4f4f9;
+    --card-bg: #ffffff;
+    --text-color: #333;
+    --accent-blue: #007bff;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    background-color: var(--card-bg);
+    width: 100%;
+    max-width: 600px;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #444;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+/* Umschalter Design */
+.mode-switch {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    background: #eee;
+    padding: 5px;
+    border-radius: 25px;
+}
+
+.mode-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 20px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.mode-btn.active {
+    background-color: #333;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* TAB NAVIGATION */
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+
+.tab-btn {
+    padding: 8px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    white-space: nowrap;
+    font-weight: 600;
+    flex: 1;
+    text-align: center;
+}
+
+.tab-btn.active-gold { background-color: var(--primary-gold); color: white; border-color: var(--primary-gold); }
+.tab-btn.active-silver { background-color: var(--primary-silver); color: white; border-color: var(--primary-silver); }
+.tab-btn.active-platinum { background-color: var(--primary-platinum); color: white; border-color: var(--primary-platinum); }
+.tab-btn.active-copper { background-color: var(--primary-copper); color: white; border-color: var(--primary-copper); }
+
+.content-section {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+.content-section.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Preis Sektion */
+.price-section {
+    background-color: #fcfcfc;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #eee;
+    margin-bottom: 20px;
+    text-align: center;
+    border-left: 5px solid #ccc;
+}
+
+#section-gold .price-section { border-left-color: var(--primary-gold); background-color: #fffdf5; }
+#section-silver .price-section { border-left-color: var(--primary-silver); background-color: #f8f9fa; }
+#section-platinum .price-section { border-left-color: var(--primary-platinum); background-color: #f0f0f0; }
+#section-copper .price-section { border-left-color: var(--primary-copper); background-color: #fff5ee; }
+
+.price-input-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.price-section input {
+    width: 140px;
+    padding: 10px;
+    font-size: 1.3rem;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.price-section input:disabled {
+    background-color: #e9ecef;
+    color: #666;
+    cursor: not-allowed;
+    border-color: transparent;
+}
+
+.refresh-btn {
+    background-color: var(--accent-blue);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: none; 
+}
+
+/* LISTE & INPUTS (Updated Style) */
+.metal-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.metal-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Schiebt Label nach links, Input nach rechts */
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.metal-label {
+    flex: 1; /* Nimmt den linken Platz ein */
+}
+.metal-label span { display: block; font-weight: bold; color: #333; }
+.metal-label small { color: #888; font-size: 0.8rem; }
+
+/* Neue Gruppe für Input + g */
+.input-group {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px; /* Abstand zwischen Input und g */
+}
+
+.metal-input {
+    width: 100px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    text-align: right;
+    font-size: 1.1rem;
+    color: #333;
+    background: #fff;
+    transition: border-color 0.2s;
+}
+
+.metal-input:focus {
+    outline: none;
+    border-color: var(--primary-gold); /* Fokus Farbe */
+}
+
+.unit {
+    font-size: 1rem;
+    color: #666;
+    width: 15px; /* Feste Breite damit es nicht springt */
+}
+
+
+/* Gesamtergebnis */
+.total-summary {
+    margin-top: 30px;
+    background-color: #222;
+    color: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.total-label { font-size: 0.8rem; opacity: 0.7; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1.5px; }
+.total-value { font-size: 2.5rem; font-weight: bold; color: var(--primary-gold); margin-bottom: 20px; }
+
+.breakdown {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    border-top: 1px solid #444;
+    padding-top: 15px;
+    font-size: 0.9rem;
+    text-align: left;
+}
+
+.breakdown-item { width: 45%; display: flex; justify-content: space-between; }
+.breakdown-val { font-weight: bold; }
