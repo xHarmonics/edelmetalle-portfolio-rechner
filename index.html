@@ -16,7 +16,7 @@
         <button class="mode-btn" id="btnLive" onclick="setMode('live')">Live Preise - Coming Soon</button>
     </div>
     <div style="text-align:center; margin-bottom:15px; display:none;" id="liveControl">
-        <button class="refresh-btn" style="display:inline-block;" onclick="fetchLivePrices()">↻ Alle Preise aktualisieren</button>
+        <button class="refresh-btn" style="display:inline-block;" onclick="fetchLivePrices()" disabled>↻ Alle Preise aktualisieren </button>
         <div id="statusMsg" style="font-size:0.8rem; color:#666; margin-top:5px;"></div>
     </div>
 
@@ -200,11 +200,12 @@
             liveControl.style.display = 'block';
             btnManual.classList.remove('active');
             btnLive.classList.add('active');
-            fetchLivePrices();
+            // fetchLivePrices();
         }
     }
 
     // Mock Live Prices
+    /*
     function fetchLivePrices() {
         const statusMsg = document.getElementById('statusMsg');
         statusMsg.innerText = "Lade Kurse...";
@@ -226,6 +227,7 @@
             calculate();
         }, 500);
     }
+    */
 
     // Berechnung
     function calculate() {
