@@ -16,5 +16,4 @@ Eine moderne, responsive Web-App zur Berechnung des tatsächlichen Schmelzwertes
 * **Clean Code:** Reines HTML, CSS und Vanilla JavaScript – keine schweren Frameworks.
 
 ## 🚀 Demo
-
-Die App kann direkt über **GitHub Pages** gehostet werden: https://xharmonics.github.io/edelmetalle-portfolio-rechner/
+Die App ist direkt über **GitHub Pages** gehostet: https://xharmonics.github.io/edelmetalle-portfolio-rechner/
